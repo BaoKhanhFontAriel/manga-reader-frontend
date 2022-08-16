@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap");
+:root {
+  --red-lipstick: #d61c4e;
+  --blue-dark: #293462;
+  --orange-dark: #feb139;
+  --yellow-light: #fff80a;
+  --test-thumbnail: "http://i.truyenvua.com/ebook/190x247/ket-thuc-nhat-dinh-se-co-hau_1627179577.jpg?r=r8645456";
+}
+
+.rubik-dirt-font {
+  font-family: "Rubik Dirt", cursive;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  color: black;
+}
+
+li {
+  list-style: none;
+}
+
+.text-black {
+  color: black !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.test {
+  background-color: lightgrey;
+}
