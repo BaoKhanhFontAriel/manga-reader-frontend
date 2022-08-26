@@ -72,7 +72,7 @@ function MainContent() {
         console.log("Response parsing failed. Error: ", ex);
       });
 
-    MangaService.findChapterByMangaId(mangaid)
+    MangaService.findChapterListByMangaId(mangaid)
       .then((res) => {
         setChapters(res.data);
       })
@@ -193,7 +193,7 @@ function ChapterTable(props) {
       {props.chapters.map((chapter) => (
         <tr>
           <td class="text-start">
-            <Link to = {`chapters/${chapter.id}`}>{chapter.title}</Link>
+            <Link to={`chapters/${chapter.id}`}>{chapter.title}</Link>
           </td>
           <td>
             {chapter.uploadedTime} {chapter.uploadedDate}

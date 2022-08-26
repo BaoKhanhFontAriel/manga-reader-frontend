@@ -46,10 +46,16 @@ class MangaService {
     );
   }
 
-  findChapterByMangaId(mangaid) {
-    return axios.get(
-      `${MANGA_READER_APP_URL}/api/mangas/${mangaid}/chapters`
-    );
+  findChapterListByMangaId(mangaid) {
+    return axios.get(`${MANGA_READER_APP_URL}/api/mangas/${mangaid}/chapters`);
+  }
+
+  getChapterById(chapterid) {
+    return axios.get(`${MANGA_READER_APP_URL}/api/chapters/${chapterid}`);
+  }
+
+  getPagesByChapterId(chapterid){
+    return axios.get(`${MANGA_READER_APP_URL}/api/chapters/${chapterid}/pages`);
   }
 }
 
