@@ -1,112 +1,162 @@
-import React, { Component, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import TestThumbnail from "./TestThumbnail";
+import MangaService from "../services/MangaService";
+import RankingItem from "./RankingItem";
 
-export default class RankingSidebar extends Component {
-  render() {
-    return (
-      <div class="ranking-sidebar ">
-        <RankingTable className="top-view-container" title="Top Luot Xem" />
-        <RankingTable className="top-favorite-container" title="Top Theo Doi" />
-
-        <div className="top-favorite-container"></div>
-      </div>
-    );
-  }
+export default function RankingSidebar() {
+  return (
+    <div class="ranking-sidebar ">
+      <TotalViewsRankingTable />
+      <FavoriteRankingTable />
+      <div className="top-favorite-container"></div>
+    </div>
+  );
 }
 
-function RankingTable(props) {
-  const [isHover, setIsHover] = useState(false);
+function TotalViewsRankingTable() {
+  const [mangaList, setMangas] = useState([]);
+
+  useEffect(() => {
+    MangaService.getTop5MangasWithMostViews()
+      .then((response) => {
+        setMangas(response.data);
+      })
+      .catch(function (ex) {
+        console.log("Response parsing failed. Error: ", ex);
+      });
+  }, []);
 
   return (
-    <div className={props.className} class="border mb-4">
-      <a
-        href="#"
-        className="title d-flex  align-items-center border-bottom p-2 mx-2"
-        style={{
-          fontWeight: "bold",
-          fontSize: "large",
-          color: isHover ? "var(--orange-dark)" : "var(--red-lipstick)",
-        }}
-      >
-        <span class="material-symbols-outlined">visibility</span>
-        <span
-          class="ms-2"
-          onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}
-        >
-          {props.title}
-        </span>
-      </a>
-
+    <div className="top-favorite-container" class="border mb-4">
+      <TableTitle rankingTitle="Top Lượt Xem" icon="visibility" />
       <div className="content">
-        <RankingItem></RankingItem>
-        <RankingItem></RankingItem>
-        <RankingItem></RankingItem>
+        {mangaList.map((manga, index) => (
+          <TopViewsItem
+            mangaid={manga.id}
+            index={index}
+            mangaTitle={manga.title}
+            thumbnail={manga.thumbnailUrl}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-function RankingItem(props) {
-  const [isTitleHover, setIsTitleHover] = useState(false);
-  const [isChapterHover, setIsChapterHover] = useState(false);
+function TopViewsItem(props) {
+  const [latestChapter, setLatestChapter] = useState("latest chapter");
+  const [totalViews, setTotalViews] = useState(0);
+
+  useEffect(() => {
+    MangaService.getLatestChapterByMangaId(props.mangaid)
+      .then((response) => {
+        setLatestChapter(response.data);
+      })
+      .catch(function (ex) {
+        console.log("Response parsing failed. Error: ", ex);
+      });
+
+    MangaService.getTotalViewsByMangaId(props.mangaid).then((res) => {
+      setTotalViews(res.data);
+    });
+  }, [totalViews, latestChapter.title]);
 
   return (
-    <li class="py-2 mx-2 border-top">
-      <div class="row g-0">
-        <div class="col-2 d-flex align-items-center justify-content-center">
-          <div class="roster" style={{ fontSize: "larger" }}>
-            01
-          </div>
-        </div>
-        <div class="col-10">
-          <div class="row">
-            <div class="thumbnail col-3">
-              <TestThumbnail width="60px" height="60px" fit="cover" />
-            </div>
-            <div class="col-9 position-relative d-flex justify-content-start">
-              <a
-                href="#"
-                className="manga-title"
-                style={{
-                  fontWeight: "bolder",
-                  color: isTitleHover ? "var(--orange-dark)" : "black",
-                }}
-                onMouseEnter={() => setIsTitleHover(true)}
-                onMouseLeave={() => setIsTitleHover(false)}
-              >
-                vo luyen dinh phong
-              </a>
-              <div
-                className="chapter-ranking-number position-absolute bottom-0 text-start"
-                style={{ width: "100%" }}
-              >
-                <div class="row">
-                  <div class="col">
-                    <a
-                      href="#"
-                      style={{
-                        color: isChapterHover ? "var(--orange-dark)" : "black",
-                      }}
-                      onMouseEnter={() => setIsChapterHover(true)}
-                      onMouseLeave={() => setIsChapterHover(false)}
-                    >
-                      Chapter 167
-                    </a>
-                  </div>
-                  <div
-                    class="col d-flex align-items-center"
-                    style={{ color: "gray" }}
-                  >
-                    <span class="material-symbols-outlined">visibility</span>
-                    <span class="ms-2">10M</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <RankingItem
+      mangaid={props.mangaid}
+      index={props.index}
+      mangaTitle={props.mangaTitle}
+      thumbnail={props.thumbnail}
+      latestChapterTitle={latestChapter.title}
+      rankingNumbers={totalViews}
+      rankingIcon="visibility"
+    />
+  );
+}
+
+function FavoriteRankingTable() {
+  const [mangaList, setMangas] = useState([]);
+
+  useEffect(() => {
+    MangaService.findTop5MangasByFavorite()
+      .then((response) => {
+        setMangas(response.data);
+      })
+      .catch(function (ex) {
+        console.log("Response parsing failed. Error: ", ex);
+      });
+  }, []);
+
+  return (
+    <div className="top-favorite-container" class="border mb-4">
+      <TableTitle rankingTitle="Top Theo Dõi" icon="favorite" />
+      <div className="content">
+        {mangaList.map((manga, index) => (
+          <FavoritesItem
+            mangaid={manga.id}
+            index={index}
+            mangaTitle={manga.title}
+            thumbnail={manga.thumbnailUrl}
+            rankingIcon="favorite"
+          ></FavoritesItem>
+        ))}
       </div>
-    </li>
+    </div>
+  );
+}
+
+function FavoritesItem(props) {
+  const [latestChapter, setLatestChapter] = useState("latest chapter");
+  const [favorites, setFavorites] = useState(0);
+
+  useEffect(() => {
+    MangaService.getLatestChapterByMangaId(props.mangaid)
+      .then((response) => {
+        setLatestChapter(response.data);
+      })
+      .catch(function (ex) {
+        console.log("Response parsing failed. Error: ", ex);
+      });
+
+    MangaService.getFavoriteNumberByMangaId(props.mangaid).then((res) => {
+      setFavorites(res.data);
+    });
+  }, []);
+
+  return (
+    <RankingItem
+      mangaid={props.mangaid}
+      index={props.index}
+      mangaTitle={props.mangaTitle}
+      thumbnail={props.thumbnail}
+      latestChapterTitle={latestChapter.title}
+      rankingNumbers={favorites}
+      rankingIcon="favorite"
+    ></RankingItem>
+  );
+}
+
+function TableTitle(props) {
+  const [isHover, setIsHover] = useState(false);
+
+  return (
+    <a
+      href="#"
+      className="title d-flex align-items-center border-bottom p-2 mx-2"
+      style={{
+        fontWeight: "bold",
+        fontSize: "large",
+        color: isHover ? "var(--orange-dark)" : "var(--red-lipstick)",
+      }}
+    >
+      <span class="material-symbols-outlined">{props.icon}</span>
+      <span
+        class="ms-2"
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+      >
+        {props.rankingTitle}
+      </span>
+    </a>
   );
 }

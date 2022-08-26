@@ -4,7 +4,6 @@
   --blue-dark: #293462;
   --orange-dark: #feb139;
   --yellow-light: #fff80a;
-  --test-thumbnail: "http://i.truyenvua.com/ebook/190x247/ket-thuc-nhat-dinh-se-co-hau_1627179577.jpg?r=r8645456";
 }
 
 .rubik-dirt-font {
@@ -37,4 +36,17 @@ li {
 
 .test {
   background-color: lightgrey;
+}
+
+td{
+  font-weight: normal !important;
+  border-width: 1px;
+  border-style: dashed hidden dashed hidden ;
+  padding: 8px;
+}
+
+th {
+  border-width: 1px;
+  border-style: hidden hidden dashed hidden ;
+  padding: 8px;
 }

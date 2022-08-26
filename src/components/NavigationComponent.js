@@ -1,4 +1,7 @@
 import React, { Component, useState } from "react";
+import { CategoryDropdownMenu, RankingDropdownMenu } from "./DropdownMenu";
+import { Routes, Route, Link } from "react-router-dom";
+import HomePage from "./HomePage";
 
 export default class NavigationComponent extends Component {
   render() {
@@ -9,124 +12,36 @@ export default class NavigationComponent extends Component {
     };
 
     return (
-      <nav style={navStyle}>
-        <div className="container">
-          <div class="nav-menu" style={{ fontSize: "18px" }}>
-            <ul class="d-flex" style={{ paddingLeft: "0px" }}>
-              <NavItem text={"Trang Chủ"} />
-              <NavItem
-                text={"Thể Loại"}
-                isDropdown={true}
-                isCategory={true}
-              ></NavItem>
-              <NavItem
-                text={"Xếp Hạng"}
-                isDropdown={true}
-                isRanking={true}
-              ></NavItem>
+      <>
+        <nav style={navStyle}>
+          <div className="container">
+            <div class="nav-menu" style={{ fontSize: "18px" }}>
+              <ul class="d-flex" style={{ paddingLeft: "0px" }}>
+                <NavItem text={"Trang Chủ"}  />
+                <NavItem
+                  text={"Thể Loại"}
+                  isDropdown={true}
+                  isCategory={true}
+                ></NavItem>
+                <NavItem
+                  text={"Xếp Hạng"}
+                  isDropdown={true}
+                  isRanking={true}
+                ></NavItem>
 
-              <NavItem text={"Tìm Truyện"} />
-              <NavItem text={"Lịch Sử"} />
-              <NavItem text={"Theo Dõi"} />
-            </ul>
+                <NavItem text={"Tìm Truyện"} />
+                <NavItem text={"Lịch Sử"} />
+                <NavItem text={"Theo Dõi"} />
+              </ul>
+            </div>
           </div>
-        </div>
-      </nav>
+        </nav>
+        {/* <Routes>
+          <Route path="/" element={<HomePage/>}/>
+        </Routes> */}
+      </>
     );
   }
-}
-
-function CategoryDropdownMenu() {
-  const categoryDropdownStyle = {
-    position: "absolute",
-    top: "100%",
-    start: "0",
-    width: "400px",
-    marginLeft: "-10px",
-  };
-
-  return (
-    <div
-      style={categoryDropdownStyle}
-      class="category-dropdown-menu position-absolute shadow bg-body rounded"
-    >
-      <div class="row justify-content-start p-3 g-0">
-        <div class="col-4">
-          <DropdownItem text="Tất cả" />
-          <DropdownItem text="Action" />
-          <DropdownItem text="Adventure" />
-          <DropdownItem text="Comedy" />
-        </div>
-        <div class="col-4">
-          <DropdownItem text="Fantasy" />
-          <DropdownItem text="Horror" />
-          <DropdownItem text="Mystery" />
-          <DropdownItem text="Shounen" />
-        </div>
-        <div class="col-4">
-          <DropdownItem text="Shoujo" />
-          <DropdownItem text="Historical" />
-          <DropdownItem text="Slice of life" />
-          <DropdownItem text="Tragedy" />
-        </div>
-      </div>
-      <ul></ul>
-    </div>
-  );
-}
-
-function RankingDropdownMenu() {
-  const rankingDropdownStyle = {
-    position: "absolute",
-    top: "100%",
-    start: "0",
-    width: "160px",
-    marginLeft: "-10px",
-  };
-
-  return (
-    <div
-      style={rankingDropdownStyle}
-      class="category-dropdown-menu position-absolute shadow p-3 bg-body rounded"
-    >
-      <DropdownItem text="Top Xem" />
-      <DropdownItem text="Top Theo Dõi" />
-    </div>
-  );
-}
-
-function DropdownItem(props) {
-  const [isHover, setIsHover] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsHover(true);
-  };
-  const handleMouseLeave = () => {
-    setIsHover(false);
-  };
-
-  const boxStyle = {
-    backgroundColor: isHover ? "white" : "",
-    textAlign: "left",
-    marginTop: "8px",
-    marginBottom: "8px",
-  };
-
-  const linkStyle = {
-    color: isHover ? "orange" : "black",
-  };
-
-  return (
-    <li
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={boxStyle}
-    >
-      <a style={linkStyle} class="" href="#">
-        {props.text}
-      </a>
-    </li>
-  );
 }
 
 function NavItem(props) {
@@ -156,17 +71,17 @@ function NavItem(props) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <a style={linkStyle} class="" href="#">
+      <div style ={linkStyle}>
         <div class="d-flex align-items-center">
           {props.text}
           <ExpandMoreIcon isDropdown={props.isDropdown} />
         </div>
-      </a>
+      </div>
 
-      {isHover && props.isDropdown == true && props.isCategory == true && (
+      {isHover && props.isDropdown === true && props.isCategory === true && (
         <CategoryDropdownMenu />
       )}
-      {isHover && props.isDropdown == true && props.isRanking == true && (
+      {isHover && props.isDropdown === true && props.isRanking === true && (
         <RankingDropdownMenu />
       )}
     </div>
