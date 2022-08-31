@@ -1,33 +1,34 @@
-import logo from "./logo.svg";
 import "./App.css";
-
-import HomePage from "./components/HomePage";
-import Footer from "./components/Footer";
-import axios from "axios";
-import React, { Component, useEffect, useState } from "react";
-import MangaService from "./services/MangaService";
-import MangaPage from "./components/MangaPage";
-import { Routes, Route, BrowserRouter, Link } from "react-router-dom";
-import ChapterPage from "./components/ChapterPage";
-
+import HomePage from "./components/home/HomePage";
+import MangaPage from "./components/manga/MangaPage";
+import { Routes as Switch, Route } from "react-router-dom";
+import ChapterPage from "./components/chapter/ChapterPage";
+import LoginPage from "./components/user/login/LoginPage";
+import SignUpPage from "./components/user/signup/SignUpPage";
+import FavoritePage from "./components/user/favorite/FavoritePage";
 function App() {
   return (
     <div className="App">
-      <Routes>
+      <Switch>
         <Route path="/" element={<HomePage />}></Route>
         <Route path="mangas">
           <Route path=":mangaid" element={<MangaPage />}></Route>
           {/* <Route path=":genre" element={<MangaPage />}></Route> */}
         </Route>
         <Route path="mangas">
-          <Route path=":mangaid">
+          <Route path=":mangaid" element = {<MangaPage/>}>
             <Route path="chapters">
               <Route path=":chapterid" element={<ChapterPage />}></Route>
             </Route>
           </Route>
           {/* <Route path=":genre" element={<MangaPage />}></Route> */}
         </Route>
-      </Routes>
+        <Route path="user">
+            <Route path="favorites" element={<FavoritePage />}></Route>
+        </Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+      </Switch>
     </div>
   );
 }

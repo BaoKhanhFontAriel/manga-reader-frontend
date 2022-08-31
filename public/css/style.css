@@ -14,13 +14,28 @@
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
 }
 
-a {
-  text-decoration: none;
+header a:hover {
+  color: var(--orange-dark);
+}
+
+header .logout a:hover {
+  color: var(--red-lipstick);
+}
+
+button:hover{
+  opacity: 90%;
 }
 
 a:hover {
+  color: var(--orange-dark);
+}
+
+a {
+  text-decoration: none;
   color: black;
 }
+
+
 
 li {
   list-style: none;
@@ -49,4 +64,8 @@ th {
   border-width: 1px;
   border-style: hidden hidden dashed hidden ;
   padding: 8px;
+}
+
+.container{
+  width: 1280px;
 }
