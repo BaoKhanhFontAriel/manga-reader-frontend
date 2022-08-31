@@ -5,7 +5,7 @@ import NavigationComponent from "../common/Navigation";
 import Footer from "../common/Footer";
 import { connect } from "react-redux";
 import MainContent from "./MainContent";
-
+import ChapterPage from "../chapter/ChapterPage";
 export function MangaPage(props) {
   return (
     <div>
@@ -15,7 +15,7 @@ export function MangaPage(props) {
         <div class="container">
           <div class="row">
             <div class="col-9">
-              <MainContent/>
+              <MainContent />
             </div>
             <div class="col-3">
               <RankingSidebar />
@@ -24,6 +24,7 @@ export function MangaPage(props) {
         </div>
       </main>
       <Footer />
+
     </div>
   );
 }
@@ -34,6 +35,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(MangaPage);
-
-
-

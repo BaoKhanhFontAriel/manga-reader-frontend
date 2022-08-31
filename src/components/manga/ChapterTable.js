@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import MangaService from "../../services/manga.service";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+
 
 export function ChapterTable(props) {
-    return (
+
+  return (
+    <div>
       <table className="chapters-table" style={{ width: "100%" }}>
         <tr>
           <th class="text-start">Tên chương</th>
@@ -22,21 +25,23 @@ export function ChapterTable(props) {
           </tr>
         ))}
       </table>
-    );
-  }
-  
-  function UploadedDateTimeByChapterId(props) {
-    const [datetime, setDatetime] = useState([]);
-  
-    useEffect(() => {
-      MangaService.getUploadedDateTimeByChapterId(props.chapterid)
-        .then((res) => {
-          setDatetime(res.data);
-        })
-        .catch(function (ex) {
-          console.log("Response parsing failed. Error: ", ex);
-        });
-    });
-  
-    return <>{datetime}</>;
-  }
+
+    </div>
+  );
+}
+
+function UploadedDateTimeByChapterId(props) {
+  const [datetime, setDatetime] = useState([]);
+
+  useEffect(() => {
+    MangaService.getUploadedDateTimeByChapterId(props.chapterid)
+      .then((res) => {
+        setDatetime(res.data);
+      })
+      .catch(function (ex) {
+        console.log("Response parsing failed. Error: ", ex);
+      });
+  });
+
+  return <>{datetime}</>;
+}

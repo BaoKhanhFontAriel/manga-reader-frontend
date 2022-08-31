@@ -16,15 +16,15 @@ function App() {
           {/* <Route path=":genre" element={<MangaPage />}></Route> */}
         </Route>
         <Route path="mangas">
-          <Route path=":mangaid" element = {<MangaPage/>}>
-            <Route path="chapters">
-              <Route path=":chapterid" element={<ChapterPage />}></Route>
-            </Route>
+          <Route path=":mangaid">
+              <Route path={`chapters`}>
+                <Route path=":chapterid" element={<ChapterPage />}></Route>
+              </Route>
           </Route>
           {/* <Route path=":genre" element={<MangaPage />}></Route> */}
         </Route>
         <Route path="user">
-            <Route path="favorites" element={<FavoritePage />}></Route>
+          <Route path="favorites" element={<FavoritePage />}></Route>
         </Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/signup" element={<SignUpPage />}></Route>

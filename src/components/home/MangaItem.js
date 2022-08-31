@@ -8,7 +8,7 @@ export default function MangaItem(props) {
         id={props.mangaId}
         style={{ marginTop: "10px", marginBottom: "10px" }}
       >
-        <Link to={`${props.mangaId}`}>
+        <Link to={`/mangas/${props.mangaId}`}>
           <img
             width={"100%"}
             height={"300px"}

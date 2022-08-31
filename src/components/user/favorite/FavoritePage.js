@@ -5,8 +5,8 @@ import Footer from "../../common/Footer";
 import RankingSidebar from "../../common/RankingSidebar";
 import userService from "../../../services/user.service";
 import { MainContentTitle } from "../../home/HomePage";
-import  MangaItem  from "../../home/MangaItem";
-import  Pagination  from "../../home/Pagination";
+import MangaItem from "../../home/MangaItem";
+import Pagination from "../../home/Pagination";
 import { connect } from "react-redux";
 import FavoriteButton from "../../manga/FavoriteButton";
 
@@ -37,8 +37,13 @@ export class FavoritePage extends Component {
 function MainContent(props) {
   const [mangas, setMangas] = useState([]);
   const username = props.user.username;
+  const increFavorite = () => {}
+  const decreFavorite = () => {}
+
+
   useEffect(() => {
-    userService.getFavoriteMangaByUsername(username)
+    userService
+      .getFavoriteMangaByUsername(username)
       .then((response) => {
         setMangas(response.data);
       })
@@ -59,7 +64,11 @@ function MainContent(props) {
                 thumbnailUrl={manga.thumbnailUrl}
                 title={manga.title}
               />
-              <FavoriteButton />
+              <FavoriteButton
+                mangaid={manga.id}
+                increFavorite={increFavorite}
+                decreFavorite={decreFavorite}
+              />
             </div>
           ))}
         </div>

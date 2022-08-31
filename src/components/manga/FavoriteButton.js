@@ -5,11 +5,10 @@ import { connect } from "react-redux";
 import { useParams } from "react-router";
 export function FavoriteButton(props) {
   const [isFavorited, setIsFavorited] = useState(false);
-  const { mangaid } = useParams();
 
   useEffect(() => {
     userService
-      .isMangaFavoritedByUser(mangaid, props.user.username)
+      .isMangaFavoritedByUser(props.mangaid, props.user.username)
       .then((res) => {
         setIsFavorited(res.data);
       })
@@ -23,7 +22,7 @@ export function FavoriteButton(props) {
     props.increFavorite();
 
     userService
-      .addMangaToFavorite(mangaid, props.user.username)
+      .addMangaToFavorite(props.mangaid, props.user.username)
       .then((res) => {
         console.log(res.data);
       })
@@ -36,7 +35,7 @@ export function FavoriteButton(props) {
     setIsFavorited(false);
     props.decreFavorite();
     userService
-      .removeMangaFromFavorite(mangaid, props.user.username)
+      .removeMangaFromFavorite(props.mangaid, props.user.username)
       .then((res) => {
         console.log(res.data);
       })
