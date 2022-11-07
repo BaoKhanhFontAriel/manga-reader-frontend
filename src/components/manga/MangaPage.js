@@ -1,17 +1,16 @@
-import React, { Component, useEffect, useState } from "react";
 import RankingSidebar from "../common/RankingSidebar";
-import HeaderComponent from "../common/Header";
-import NavigationComponent from "../common/Navigation";
+import Header from "../common/Header";
+import Navigation from "../common/Navigation";
 import Footer from "../common/Footer";
 import { connect } from "react-redux";
 import MainContent from "./MainContent";
-import ChapterPage from "../chapter/ChapterPage";
+import { Outlet } from "react-router-dom";
 export function MangaPage(props) {
   return (
     <div>
-      <HeaderComponent />
-      <NavigationComponent />
-      <main class="my-4">
+      <Header />
+      <Navigation/>
+      <main class="my-4" style={{ minHeight: "800px" }} >
         <div class="container">
           <div class="row">
             <div class="col-9">
@@ -24,7 +23,7 @@ export function MangaPage(props) {
         </div>
       </main>
       <Footer />
-
+      <Outlet />
     </div>
   );
 }

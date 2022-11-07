@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import MangaService from "../../services/manga.service";
 import { GenreItem } from "./GenreItem";
@@ -7,7 +7,8 @@ import MangaPageFavoritebutton from "./MangaPageFavoriteButton";
 import { ChapterTable } from "./ChapterTable";
 import { DetailItem } from "./DetailItem";
 import { connect, useDispatch } from "react-redux";
-
+import { history } from "../../helper/history";
+import Notification from "../common/notification/Notification";
 
 export function MainContent(props) {
   const [manga, setManga] = useState([]);
@@ -60,8 +61,12 @@ export function MainContent(props) {
       .catch(function (ex) {
         console.log("Response parsing failed. Error: ", ex);
       });
-
   }, []);
+
+  function handleCLick() {
+    history.push(`/mangas/${mangaid}/upload-chapter`);
+    window.location.reload();
+  }
 
   return (
     <div style={{ fontSize: "larger" }}>
@@ -104,15 +109,23 @@ export function MainContent(props) {
               item={manga.summary}
               icon="summarize"
             />
-           <MangaPageFavoritebutton/>
+            <MangaPageFavoritebutton />
           </div>
         </div>
       </div>
 
       <div className="manga-chapters">
-        <div class="d-flex adjust-items-center border-bottom border-warning pb-2">
+        <div class="d-flex adjust-items-center border-bottom border-warning pb-2 position-relative">
           <span class="material-symbols-outlined me-2">list</span>
           <span style={{ fontWeight: "bolder" }}>DANH SÁCH CHƯƠNG</span>
+          <button
+            className="btn btn-warning position-absolute end-0"
+            style={{ top: "-6px" }}
+            onClick={handleCLick}
+            disabled={!props.isLoggedIn}
+          >
+            Thêm Chương Mới
+          </button>
         </div>
         <ChapterTable chapters={chapters} />
       </div>
@@ -122,7 +135,6 @@ export function MainContent(props) {
 
 function mapStateToProps(state) {
   const { isLoggedIn } = state.auth;
-
   return { isLoggedIn };
 }
 

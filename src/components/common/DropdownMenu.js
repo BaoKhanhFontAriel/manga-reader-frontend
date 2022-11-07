@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { history } from "../../helper/history";
+import mangaService from "../../services/manga.service";
 
 export function CategoryDropdownMenu() {
   const categoryDropdownStyle = {
@@ -9,6 +12,17 @@ export function CategoryDropdownMenu() {
     marginLeft: "-10px",
   };
 
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    mangaService
+      .getAllGenres()
+      .then((res) => {
+        setGenres(res.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
     <div
       style={categoryDropdownStyle}
@@ -16,25 +30,14 @@ export function CategoryDropdownMenu() {
     >
       <div class="row justify-content-start p-3 g-0">
         <div class="col-4">
-          <DropdownItem text="Tất cả" />
-          <DropdownItem text="Action" />
-          <DropdownItem text="Adventure" />
-          <DropdownItem text="Comedy" />
+          <DropdownItem text="Tất cả" link="" sortBy="update" />
         </div>
-        <div class="col-4">
-          <DropdownItem text="Fantasy" />
-          <DropdownItem text="Horror" />
-          <DropdownItem text="Mystery" />
-          <DropdownItem text="Shounen" />
-        </div>
-        <div class="col-4">
-          <DropdownItem text="Shoujo" />
-          <DropdownItem text="Historical" />
-          <DropdownItem text="Slice of life" />
-          <DropdownItem text="Tragedy" />
-        </div>
+        {genres.map((genre) => (
+          <div class="col-4">
+            <DropdownItem text={genre} link={genre} />
+          </div>
+        ))}
       </div>
-      <ul></ul>
     </div>
   );
 }
@@ -53,8 +56,8 @@ export function RankingDropdownMenu() {
       style={rankingDropdownStyle}
       class="category-dropdown-menu position-absolute shadow p-3 bg-body rounded"
     >
-      <DropdownItem text="Top Xem" />
-      <DropdownItem text="Top Theo Dõi" />
+      <DropdownItem text="Top Xem" link="" sortBy="top-view" />
+      <DropdownItem text="Top Theo Dõi" link="" sortBy="top-favorite" />
     </div>
   );
 }
@@ -69,11 +72,20 @@ function DropdownItem(props) {
     setIsHover(false);
   };
 
+  function handleGenreClick(genre, sortBy) {
+    console.log("genre click ", genre);
+    genre === ""
+      ? history.push(`/genres/${sortBy}`)
+      : history.push(`/genres/${genre}/update`);
+    window.location.reload();
+  }
+
   const boxStyle = {
     backgroundColor: isHover ? "white" : "",
     textAlign: "left",
     marginTop: "8px",
     marginBottom: "8px",
+    cursor: "pointer",
   };
 
   const linkStyle = {
@@ -86,7 +98,7 @@ function DropdownItem(props) {
       onMouseLeave={handleMouseLeave}
       style={boxStyle}
     >
-      <a style={linkStyle} class="" href="#">
+      <a href="" onClick={() => handleGenreClick(props.link, props.sortBy)}>
         {props.text}
       </a>
     </li>

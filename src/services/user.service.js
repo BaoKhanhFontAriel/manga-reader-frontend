@@ -1,48 +1,78 @@
 import axios from "axios";
 import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/users/";
-const MANGA_READER_APP_URL = "http://localhost:8070/api";
+
+const MANGA_READER_APP_URL = process.env.REACT_APP_SERVER_URL;
+const API_URL = MANGA_READER_APP_URL + "/user";
 
 class UserService {
-  getUserDetail(id) {
-    return axios.get(API_URL + `${id}`, { headers: authHeader() });
-  }
-  addNewUser(data) {
-    return axios.post(API_URL + "/add", data, { headers: authHeader() });
+  getUserDetail() {
+    return axios.get(API_URL, { headers: authHeader() });
   }
 
-  editUserDetail(id, data) {
-    return axios.put(API_URL + `/edit/${id}`, data, { headers: authHeader() });
+  editUserDetail(data) {
+    return axios.put(API_URL + `/edit`, data, { headers: authHeader() });
   }
 
-  deleteUser(id) {
-    return axios.delete(API_URL + `/delete/${id}`, { headers: authHeader() });
+  deleteUser() {
+    return axios.delete(API_URL + `/delete`, { headers: authHeader() });
   }
-  getFavoriteMangaByUsername(username) {
-    return axios.get(`${MANGA_READER_APP_URL}/users/${username}/favorites`, {
+
+  getFavoriteManga() {
+    return axios.get(`${API_URL}/favorites`, {
       headers: authHeader(),
     });
   }
 
-  isMangaFavoritedByUser(mangaid, username) {
-    return axios.get(
-      `${MANGA_READER_APP_URL}/users/is-favorited?mangaid=${mangaid}&username=${username}`,
-      { headers: authHeader() }
-    );
+  isMangaFavoritedByUser(mangaid) {
+    return axios.get(`${API_URL}/is-favorited?mangaid=${mangaid}`, {
+      headers: authHeader(),
+    });
   }
 
-  addMangaToFavorite(mangaid, username) {
-    return axios.get(
-      `${MANGA_READER_APP_URL}/users/add-favorite?mangaid=${mangaid}&username=${username}`,
-      { headers: authHeader() }
-    );
+  addMangaToFavorite(mangaid) {
+    return axios.get(`${API_URL}/add-favorite?mangaid=${mangaid}`, {
+      headers: authHeader(),
+    });
   }
 
-  removeMangaFromFavorite(mangaid, username) {
-    return axios.get(
-      `${MANGA_READER_APP_URL}/users/remove-favorite?mangaid=${mangaid}&username=${username}`,
-      { headers: authHeader() }
-    );
+  removeMangaFromFavorite(mangaid) {
+    return axios.get(`${API_URL}/remove-favorite?mangaid=${mangaid}`, {
+      headers: authHeader(),
+    });
+  }
+
+  uploadImage(formData) {
+    return axios.post(MANGA_READER_APP_URL + `/upload/image`, formData, {
+      headers: authHeader(),
+    });
+  }
+
+  isPasswordMatch(rawPassword) {
+    let request = {
+      rawPassword: rawPassword,
+    };
+
+    return axios.post(API_URL + `/check-password`, request, {
+      headers: authHeader(),
+    });
+  }
+
+  changePassword(newPassword) {
+    let request = {
+      rawPassword: newPassword,
+    };
+
+    return axios.post(API_URL + `/change-password`, request, {
+      headers: authHeader(),
+    });
+  }
+
+
+
+  isAdmin() {
+    return axios.get(API_URL + "/is-admin", {
+      headers: authHeader(),
+    });
   }
 }
 export default new UserService();

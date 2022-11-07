@@ -34,7 +34,7 @@ export function MangaPageFavoriteButton(props) {
       )}
       <div className="d-flex align-items-center">
         <FavoriteButton
-          mangaid={mangaid}
+          mangaId={mangaid}
           increFavorite={increFavorite}
           decreFavorite={decreFavorite}
         />

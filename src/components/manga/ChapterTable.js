@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import MangaService from "../../services/manga.service";
 import { Link } from "react-router-dom";
 
-
 export function ChapterTable(props) {
-
   return (
     <div>
       <table className="chapters-table" style={{ width: "100%" }}>
@@ -16,7 +14,7 @@ export function ChapterTable(props) {
         {props.chapters.map((chapter) => (
           <tr>
             <td class="text-start">
-              <Link to={`chapters/${chapter.id}`}>{chapter.title}</Link>
+              <Link to={`chapters/${chapter.id}`}>{chapter.optional? chapter.title + " (" + chapter.optional + ")": chapter.title} </Link>
             </td>
             <td>
               <UploadedDateTimeByChapterId chapterid={chapter.id} />

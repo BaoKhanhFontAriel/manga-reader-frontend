@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Outlet, useParams } from "react-router";
 import MangaService from "../../services/manga.service";
 import Footer from "../common/Footer";
 import HeaderComponent from "../common/Header";
@@ -7,7 +7,10 @@ import Navigation from "../common/Navigation";
 import { Link } from "react-router-dom";
 
 export default class ChapterPage extends Component {
+  
   render() {
+    console.log("ChapterPage");
+
     return (
       <div>
         <HeaderComponent />
@@ -62,7 +65,7 @@ function MainContent() {
           class="text-start"
           style={{ textTransform: "uppercase", fontSize: "x-large" }}
         >
-          <Link to={`../../`}>{manga.title}</Link> - {chapter.title}
+          <Link to={`../`}>{manga.title}</Link> - {chapter.title}
         </span>
       </div>
       <div className="chapter-images">

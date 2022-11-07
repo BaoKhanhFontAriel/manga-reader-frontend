@@ -3,11 +3,13 @@ import { connect } from "react-redux";
 import { CategoryDropdownMenu, RankingDropdownMenu } from "./DropdownMenu";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
+import { history } from "../../helper/history";
 export function Navigation(props) {
   const navStyle = {
     backgroundColor: "#293462",
     position: "sticky",
     top: "0",
+    zIndex: "1",
   };
 
   return (
@@ -30,18 +32,12 @@ export function Navigation(props) {
                 linkTo=""
               ></NavItem>
 
-              <NavItem text={"Tìm Truyện"} linkTo="" />
+              <NavItem text={"Tìm Truyện"} linkTo="/search" />
               {props.isLoggedIn && (
-                <NavItem
-                  text={"Theo Dõi"}
-                  linkTo={`/user/favorites`}
-                />
+                <NavItem text={"Theo Dõi"} linkTo={`/user/favorites`} />
               )}
               {props.isLoggedIn && (
-                <NavItem
-                  text={"Dashboard"}
-                  linkTo={`/user/chapters`}
-                />
+                <NavItem text={"Dashboard"} linkTo={`/user/dashboard`} />
               )}
             </ul>
           </div>
@@ -65,15 +61,21 @@ export function NavItem(props) {
     backgroundColor: isHover ? "white" : "",
     padding: "10px",
     position: "relative",
+    cursor: "pointer",
   };
 
   const linkStyle = {
     color: isHover ? "black" : "white",
   };
 
+  function redirectTo(link) {
+    history.push(link);
+    window.location.reload();
+  }
+
   return (
-    <Link
-      to={props.linkTo}
+    <div
+      onClick={() => redirectTo(props.linkTo)}
       class="nav-menu-item"
       style={boxStyle}
       onMouseEnter={handleMouseEnter}
@@ -92,7 +94,7 @@ export function NavItem(props) {
       {isHover && props.isDropdown === true && props.isRanking === true && (
         <RankingDropdownMenu />
       )}
-    </Link>
+    </div>
   );
 }
 

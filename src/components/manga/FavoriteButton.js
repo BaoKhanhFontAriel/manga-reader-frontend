@@ -1,20 +1,25 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import userService from "../../services/user.service";
-import { connect } from "react-redux";
-import { useParams } from "react-router";
+import { connect, useDispatch } from "react-redux";
+import { setNotification } from "../../slice/actions/notification";
+
 export function FavoriteButton(props) {
   const [isFavorited, setIsFavorited] = useState(false);
-
+  const mangaId = props.mangaId
+  const user = props.user
+  const dispatch = useDispatch();
   useEffect(() => {
-    userService
-      .isMangaFavoritedByUser(props.mangaid, props.user.username)
-      .then((res) => {
-        setIsFavorited(res.data);
-      })
-      .catch(function (ex) {
-        console.log("Response parsing failed. Error: ", ex);
-      });
+    if (props.isLoggedIn) {
+      userService
+        .isMangaFavoritedByUser(mangaId, user.id)
+        .then((res) => {
+          setIsFavorited(res.data);
+        })
+        .catch(function (ex) {
+          console.log("Response parsing failed. Error: ", ex);
+        });
+    }
   }, []);
 
   function handleAddToFavorite() {
@@ -22,22 +27,22 @@ export function FavoriteButton(props) {
     props.increFavorite();
 
     userService
-      .addMangaToFavorite(props.mangaid, props.user.username)
-      .then((res) => {
-        console.log(res.data);
+      .addMangaToFavorite(mangaId, user.username)
+      .then(()=>{
+          dispatch(setNotification("Đã thêm vào mục thẽo dõi!"))
       })
       .catch(function (ex) {
         console.log("Response parsing failed. Error: ", ex);
       });
   }
 
-  function handleCancelFavorite() {
+  function handleRemoveFromFavorite() {
     setIsFavorited(false);
     props.decreFavorite();
     userService
-      .removeMangaFromFavorite(props.mangaid, props.user.username)
+      .removeMangaFromFavorite(mangaId, user.username)
       .then((res) => {
-        console.log(res.data);
+        dispatch(setNotification("Đã bỏ khỏi mục thẽo dõi!"))
       })
       .catch(function (ex) {
         console.log("Response parsing failed. Error: ", ex);
@@ -62,12 +67,13 @@ export function FavoriteButton(props) {
         <button
           type="button"
           class="btn btn-danger d-flex align-items-center me-2"
-          onClick={handleCancelFavorite}
+          onClick={handleRemoveFromFavorite}
         >
           <span class="material-symbols-outlined me-2">close</span>
           <span>Bỏ Theo dõi</span>
         </button>
       )}
+
     </div>
   );
 }

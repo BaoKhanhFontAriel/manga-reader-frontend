@@ -4,10 +4,12 @@ import Header from "../../common/Header";
 import { Link } from "react-router-dom";
 import { WelcomeTagline, FormItem, SubmitButton } from "../login/LoginPage";
 import { useDispatch } from "react-redux";
-import { register } from "../../../actions/auth";
 import { connect } from "react-redux";
 import { history } from "../../../helper/history";
-export function SignUpPage(props) {
+import { useForm } from "react-hook-form";
+import { signup } from "../../../slice/actions/auth";
+
+export default function SignUpPage(props) {
   const [state, setState] = useState({
     fullname: "",
     email: "",
@@ -15,8 +17,16 @@ export function SignUpPage(props) {
     password: "",
     successful: false,
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const [show, setShow] = useState(false);
+
   const dispatch = useDispatch();
 
   function onChangeFullname(e) {
@@ -38,15 +48,16 @@ export function SignUpPage(props) {
       password: e.target.value,
     });
   }
-  function handleRegister(e) {
-    e.preventDefault();
+  function handleRegister() {
+    setError("");
+
     setState({
       ...state,
       successful: false,
     });
 
     dispatch(
-      register(state.fullname, state.email, state.username, state.password)
+      signup(state.fullname, state.email, state.username, state.password)
     )
       .then(() => {
         setState({
@@ -54,10 +65,8 @@ export function SignUpPage(props) {
         });
         setShow(true);
       })
-      .catch(() => {
-        setState({
-          successful: false,
-        });
+      .catch((e) => {
+        setError(e);
       });
   }
 
@@ -80,37 +89,125 @@ export function SignUpPage(props) {
                 className="login-form my-5"
                 style={{ marginLeft: "100px", marginRight: "100px" }}
               >
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handleSubmit(handleRegister)}>
                   <FormItem
                     icon="person"
-                    placeholder="Fullname"
-                    value={state.fullname}
-                    onChange={(e) => onChangeFullname(e)}
+                    placeholder="Họ tên"
+                    registers={{
+                      ...register("fullname", {
+                        required: true,
+                        onChange: (e) => onChangeFullname(e),
+                      }),
+                    }}
                   />
+                  {errors.fullname && (
+                    <div className="text-danger text-start">
+                      Vui lòng điền vào mục này.
+                    </div>
+                  )}
                   <FormItem
                     icon="mail"
                     placeholder="Email"
-                    value={state.email}
-                    onChange={(e) => onChangeEmail(e)}
+                    registers={{
+                      ...register("email", {
+                        required: {
+                          value: true,
+                          message: "Vui lòng điền vào mục này.",
+                        },
+                        pattern: {
+                          value:
+                            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                          message: "Email không hợp lệ",
+                        },
+                        onChange: (e) => onChangeEmail(e),
+                      }),
+                    }}
                   />
+                  {errors.email && (
+                    <div className="text-danger text-start">
+                      {errors.email.message}
+                    </div>
+                  )}
                   <FormItem
                     icon="person"
                     placeholder="Username"
-                    value={state.username}
-                    onChange={(e) => onChangeUsername(e)}
+                    registers={{
+                      ...register("username", {
+                        required: {
+                          value: true,
+                          message: "Vui lòng điền vào mục này.",
+                        },
+                        validate:{
+                          isLenghtValidated: (value) => (value.length >= 5 & value.length <= 15) || "username phải dài từ 5 đến 15 ký tự",
+                          isAllCharactersValidated: (value) => /^[a-zA-Z0-9._]+$/.test(value) || "username không chứa dấu cách, chỉ được chứa chữ số, chữ cái, \".\" hoặc  \"_\"",
+                        },
+                        onChange: (e) => onChangeUsername(e),
+                      }),
+                    }}
                   />
+                  {errors.username && (
+                    <div className="text-danger text-start">
+                      {errors.username.message}
+                    </div>
+                  )}
                   <FormItem
                     icon="lock"
-                    placeholder="Password"
-                    value={state.password}
-                    onChange={(e) => onChangePassword(e)}
+                    placeholder="Mật khẩu"
+                    type={showPassword ? "text" : "password"}
+                    registers={{
+                      ...register("password", {
+                        required: {
+                          value: true,
+                          message: "Vui lòng điền vào mục này.",
+                        },
+                        onChange: (e) => onChangePassword(e),
+                      }),
+                    }}
                   />
+                  {errors.password && (
+                    <div className="text-danger text-start">
+                      {errors.password.message}
+                    </div>
+                  )}
+                  <FormItem
+                    icon="lock_reset"
+                    placeholder="Nhập lại mật khẩu"
+                    type={showPassword ? "text" : "password"}
+                    registers={{
+                      ...register("check_password", {
+                        required: {
+                          value: true,
+                          message: "Vui lòng điền vào mục này.",
+                        },
+                        validate: (v) =>
+                          state.password === v || "Mật khẩu gõ lại không khớp!",
+                      }),
+                    }}
+                  />
+
+                  {errors.check_password && (
+                    <div className="text-danger text-start">
+                      {errors.check_password.message}
+                    </div>
+                  )}
+
+                  <div className="show-password fs-5 mt-3 d-flex justify-content-start">
+                    <input
+                      type="checkbox"
+                      id="show-password"
+                      className="me-2"
+                      style={{ transform: "scale(1.3)" }}
+                      onClick={() => setShowPassword(!showPassword)}
+                    ></input>
+                    <label for="show-password">Hiện mật khẩu</label>
+                  </div>
+
                   <SubmitButton name="ĐĂNG KÝ" />
                 </form>
-                {props.message && (
+                {error && (
                   <div className="form-group">
                     <div className="alert alert-danger" role="alert">
-                      {props.message}
+                      {error}
                     </div>
                   </div>
                 )}
@@ -146,9 +243,9 @@ function SuccessfulSignupPopup() {
         fontSize: "18px",
       }}
     >
-      <div className="bg-warning p-3 rounded">
+      <div className="alert alert-success p-3 rounded">
         <div className="mb-2">Bạn đã đăng ký thành công!</div>
-        <div className="mb-2"> Xin hãy đăng nhập lại!</div>
+        <div className="mb-4"> Xin hãy đăng nhập lại!</div>
         <button className="btn btn-primary" type="button" onClick={handleClick}>
           Đóng
         </button>
@@ -156,12 +253,3 @@ function SuccessfulSignupPopup() {
     </div>
   );
 }
-
-function mapStateToProps(state) {
-  const { message } = state.message;
-  return {
-    message,
-  };
-}
-
-export default connect(mapStateToProps)(SignUpPage);

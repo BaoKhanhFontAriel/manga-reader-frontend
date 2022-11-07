@@ -1,15 +1,20 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import icon from "../../image/onepunchman-cut.png";
 import { Link } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
-import { Navigate, useParams } from "react-router";
-import { logout } from "../../actions/auth";
 import { history } from "../../helper/history";
+import MangaService from "../../services/manga.service";
+import ReactLoading from "react-loading";
+import userIcon from "../../image/user.png";
+import UserService from "../../services/user.service";
+import SearchService from "../../services/SearchService";
+import SearchBar from "./SearchBar";
+import { logout } from "../../slice/actions/auth";
+
 export function Header(props) {
   const headerStyle = {
     backgroundColor: "var(--orange-dark)",
   };
-
 
   return (
     <header style={headerStyle}>
@@ -21,25 +26,10 @@ export function Header(props) {
           <div class="col-4">
             <WebLogo />
           </div>
-          <div class="col-5">
-            <div class="search-box position-relative ">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Bạn muốn tìm truyện gì"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-              ></input>
-
-              <span
-                class="material-symbols-outlined position-absolute top-0 end-0 mt-2 me-2"
-                id="basic-addon1"
-              >
-                search
-              </span>
-            </div>
+          <div class="col-4">
+            <SearchBar />
           </div>
-          <div class="col-3 d-flex justify-content-end ">
+          <div class="col-4 d-flex justify-content-end ">
             {!props.isLoggedIn && <UserLogout />}
             {props.isLoggedIn && <UserLogin currentUser={props.user} />}
           </div>
@@ -49,18 +39,33 @@ export function Header(props) {
   );
 }
 
+
 function UserLogin(props) {
   const [show, setShow] = useState(false);
+  const [avatar, setAvatar] = useState(null);
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    UserService.getUserDetail(props.currentUser.id)
+      .then((res) => {
+        setAvatar(res.data.avatar);
+        setUsername(res.data.username);
+      })
+      .catch(function (ex) {
+        console.log(ex);
+      });
+  }, []);
+
   return (
     <div className="d-flex align-items-center  g-0">
       <div>
-        <span className="me-2">
+        <span className="me-1">
           Xin chào,
           <span
             className="ms-2"
             style={{ color: "var(--red-lipstick)", fontWeight: "bolder" }}
           >
-            {props.currentUser.username}
+            {username}
           </span>
           !
         </span>
@@ -69,14 +74,16 @@ function UserLogin(props) {
       <div className="position-relative p-2">
         <span
           style={{
-            background: "var(--red-lipstick)",
             cursor: "pointer",
-            scale: "1.6",
           }}
-          class="material-symbols-outlined rounded-circle "
+          class="material-symbols-outlined rounded-circle"
           onClick={() => setShow(!show)}
         >
-          account_circle
+          <img
+            src={avatar === null ? userIcon : avatar}
+            width={36}
+            className="rounded-circle"
+          ></img>
         </span>
         {show && <UserMenu />}
       </div>
@@ -102,17 +109,15 @@ function UserMenu() {
         width: "120px",
         right: "0",
         top: "100%",
-        zIndex: "1",
+        zIndex: "2",
       }}
     >
-      <div className="mb-2 ">
-        <Link to="/user/setting">Hồ sơ</Link>
-      </div>
-      <div>
-        <Link to="/" onClick={handleLogout}>
-          Đăng xuất
-        </Link>
-      </div>
+      <Link to="/user/setting">
+        <div className="mb-2 ">Cài đặt</div>
+      </Link>
+      <Link to="/" onClick={handleLogout}>
+        <div>Đăng xuất</div>
+      </Link>
     </div>
   );
 }
@@ -147,7 +152,7 @@ export function WebLogo() {
 }
 
 function mapStateToProps(state) {
-  const { isLoggedIn,user } = state.auth;
+  const { isLoggedIn, user } = state.auth;
   return { isLoggedIn, user };
 }
 

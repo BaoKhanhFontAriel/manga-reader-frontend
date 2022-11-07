@@ -16,7 +16,7 @@ export class FavoritePage extends Component {
       <div>
         <Header />
         <Navigation />
-        <main class="my-4">
+        <main class="my-4" style={{ minHeight: "800px" }}>
           <div class="container">
             <div class="row">
               <div class="col-9">
@@ -36,14 +36,13 @@ export class FavoritePage extends Component {
 
 function MainContent(props) {
   const [mangas, setMangas] = useState([]);
-  const username = props.user.username;
-  const increFavorite = () => {}
-  const decreFavorite = () => {}
-
+  const userId = props.user.id;
+  const increFavorite = () => {};
+  const decreFavorite = () => {};
 
   useEffect(() => {
     userService
-      .getFavoriteMangaByUsername(username)
+      .getFavoriteManga(userId)
       .then((response) => {
         setMangas(response.data);
       })
@@ -59,13 +58,9 @@ function MainContent(props) {
         <div class="row ">
           {mangas.map((manga) => (
             <div className="col-3 d-flex flex-column align-items-center ">
-              <MangaItem
-                mangaId={manga.id}
-                thumbnailUrl={manga.thumbnailUrl}
-                title={manga.title}
-              />
+              <MangaItem manga={manga} />
               <FavoriteButton
-                mangaid={manga.id}
+                mangaId={manga.id}
                 increFavorite={increFavorite}
                 decreFavorite={decreFavorite}
               />
@@ -73,9 +68,9 @@ function MainContent(props) {
           ))}
         </div>
       </div>
-      <div class="">
+      {/* <div class="">
         <Pagination totalPages={mangas.length} />
-      </div>
+      </div> */}
     </section>
   );
 }

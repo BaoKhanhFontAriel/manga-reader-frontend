@@ -3,18 +3,18 @@ import RankingSidebar from "../common/RankingSidebar";
 import MangaService from "../../services/manga.service";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import Navigation from "../common/Navigation";
 import Pagination from "./Pagination";
 import MangaItem from "./MangaItem";
-
+import { history } from "../../helper/history";
 
 export default function HomePage() {
   return (
     <div>
       <Header />
       <Navigation />
-      <main class="my-4">
+      <main class="my-4" style={{ minHeight: "800px" }}>
         <div class="container">
           <div class="row">
             <div class="col-9">
@@ -33,11 +33,27 @@ export default function HomePage() {
 
 function MainContent() {
   const [mangas, setMangas] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = searchParams.get("page");
+
+  // repoPage is the page in the manga repository
+  // pageParam is page number in url
+  const repoPage = pageParam ? pageParam - 1 : 0;
+  // const [index, setPage] = useState(index);
+
+  function loadMangaOnPage(repoPage) {
+    repoPage++;
+    history.push(`/home?page=${repoPage}`);
+    window.location.reload();
+    // setPage(page);
+  }
 
   useEffect(() => {
-    MangaService.getAllMangasInPage(0)
+    MangaService.getAllMangasInPage(repoPage)
       .then((response) => {
-        setMangas(response.data);
+        setMangas(response.data.mangas);
+        setTotalPages(response.data.totalPages);
       })
       .catch(function (ex) {
         console.log("Response parsing failed. Error: ", ex);
@@ -51,17 +67,13 @@ function MainContent() {
         <div class="row">
           {mangas.map((manga) => (
             <div class="col-3">
-              <MangaItem
-                mangaId={manga.id}
-                thumbnailUrl={manga.thumbnailUrl}
-                title={manga.title}
-              />
+              <MangaItem manga={manga} />
             </div>
           ))}
         </div>
       </div>
       <div class="">
-        <Pagination totalPages={mangas.length} />
+        <Pagination totalPages={totalPages} loadMangaOnPage={loadMangaOnPage} />
       </div>
     </section>
   );
@@ -78,9 +90,12 @@ export function MainContentTitle(props) {
         fontWeight: "bold",
       }}
     >
-      <span class="material-symbols-outlined" style={{}}>
-        star
-      </span>
+      {props.icon !== undefined ? (
+        <span class="material-symbols-outlined">{props.icon}</span>
+      ) : (
+        <span class="material-symbols-outlined">star</span>
+      )}
+
       <span
         style={{
           marginLeft: "2px",
@@ -92,7 +107,3 @@ export function MainContentTitle(props) {
     </div>
   );
 }
-
-
-
-

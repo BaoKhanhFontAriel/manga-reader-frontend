@@ -67,6 +67,7 @@ function TopViewsItem(props) {
       index={props.index}
       mangaTitle={props.mangaTitle}
       thumbnail={props.thumbnail}
+      latestChapterId ={latestChapter.id}
       latestChapterTitle={latestChapter.title}
       rankingNumbers={totalViews}
       rankingIcon="visibility"

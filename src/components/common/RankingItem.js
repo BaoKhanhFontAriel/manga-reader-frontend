@@ -1,12 +1,21 @@
 import React, { Component, useEffect, useState } from "react";
-import MangaService from "../../services/manga.service";
+import { history } from "../../helper/history";
 
 export default function RankingItem(props) {
     const [isTitleHover, setIsTitleHover] = useState(false);
     const [isChapterHover, setIsChapterHover] = useState(false);
+    function handleTitleClick() {
+      history.push(`/mangas/${props.mangaid}`);
+      window.location.reload();
+    }
+
+    function handleChapterClick() {
+      history.push(`/mangas/${props.mangaid}/chapters/${props.latestChapterId}`);
+      window.location.reload();
+    }
 
     return (
-      <li class="py-2 mx-2 border-top">
+      <li class="py-2 mx-2 border-top" >
         <div class="row g-0">
           <div class="col-2 d-flex align-items-center justify-content-center">
             <div class="roster rounded-circle" style={{ fontSize: "larger", }}>
@@ -20,15 +29,22 @@ export default function RankingItem(props) {
               </div>
   
               <div class="col-9 position-relative d-flex justify-content-start">
-                <div className="manga-title">
+                <div className="manga-title text-start" style = {{
+                      width: "100%",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis"
+                }}>
                   <a
                     href="#"
                     style={{
                       fontWeight: "bolder",
                       color: isTitleHover ? "var(--orange-dark)" : "black",
+
                     }}
                     onMouseEnter={() => setIsTitleHover(true)}
                     onMouseLeave={() => setIsTitleHover(false)}
+                    onClick={() => handleTitleClick()}
                   >
                     {props.mangaTitle}
                   </a>
@@ -47,6 +63,7 @@ export default function RankingItem(props) {
                         }}
                         onMouseEnter={() => setIsChapterHover(true)}
                         onMouseLeave={() => setIsChapterHover(false)}
+                        onClick={() => handleChapterClick()}
                       >
                         {props.latestChapterTitle}
                       </a>

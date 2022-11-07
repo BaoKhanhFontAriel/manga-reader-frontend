@@ -3,7 +3,10 @@ import React, { Component } from "react";
 export default class Footer extends Component {
   render() {
     return (
-      <footer style={{ backgroundColor: "var(--orange-dark)", }}>
+      <footer
+        style={{ backgroundColor: "var(--orange-dark)", height: "30vh" }}
+        className="mt-5"
+      >
         <div class="container py-3">
           <div class="web-icon">
             <span
